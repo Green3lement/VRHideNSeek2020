@@ -9,6 +9,7 @@ public class SeekerAI : MonoBehaviour
     
     bool playerVisible;
     bool inPursuit;
+    bool gameStart;
     private GameObject player;
     public float wanderRadius;
     public float searchRadius;
@@ -16,8 +17,9 @@ public class SeekerAI : MonoBehaviour
     public float patrolSpeed = 2f;
     public float chaseSpeed = 5f;
     public float searchTimer = 50f;
+    public float countDown = 60f;
     private Transform LastSeenLocation;
-
+    [SerializeField] Transform startZone;
     
     private Transform target;
     public NavMeshAgent agent;
@@ -32,35 +34,47 @@ public class SeekerAI : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         timer = wanderTimer;
         player = GameObject.FindGameObjectWithTag("Player");
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        playerVisible = CanSeePlayer();
         timer += Time.deltaTime;
-        if(playerVisible)
+        if(timer >= countDown  && !gameStart)
         {
-            Chasing();
-            GetComponent<Renderer>().material.color = new Color(255, 0, 0);
-            LastSeenLocation = player.transform;
-            inPursuit = true;
+            gameStart = true;
+            agent.SetDestination(startZone.position);
             timer = 0;
         }
-        else if(inPursuit)
+
+        if (gameStart)
         {
-            Searching();
-            GetComponent<Renderer>().material.color = new Color(0, 0, 255);
-            if (timer >= searchTimer)
+            playerVisible = CanSeePlayer();
+            
+            if (playerVisible)
             {
-                inPursuit = false;
+                Chasing();
+                GetComponent<Renderer>().material.color = new Color(255, 0, 0);
+                LastSeenLocation = player.transform;
+                inPursuit = true;
+                timer = 0;
             }
-        }       
-        else if (timer >= wanderTimer)
-        {
-            GetComponent<Renderer>().material.color = new Color(0, 255, 0);
-            Wandering();
-            timer = 0;
+            else if (inPursuit)
+            {
+                Searching();
+                GetComponent<Renderer>().material.color = new Color(0, 0, 255);
+                if (timer >= searchTimer)
+                {
+                    inPursuit = false;
+                }
+            }
+            else if (timer >= wanderTimer)
+            {
+                GetComponent<Renderer>().material.color = new Color(0, 255, 0);
+                Wandering();
+                timer = 0;
+            }
         }
     }
 
