@@ -68,7 +68,8 @@ public class SeekerAI : MonoBehaviour
             }
             else if (inPursuit && !playerVisible)
             {
-                Searching();
+                if(timer>=wanderTimer)
+                    Searching();
                 GetComponent<Renderer>().material.color = new Color(0, 0, 255);
                 if (timer >= searchTimer)
                 {
@@ -149,7 +150,7 @@ public class SeekerAI : MonoBehaviour
     {
         agent.speed = chaseSpeed;
         Debug.Log("Searching: " + agent);
-        Vector3 searchPos = RandomNavSphere(LastSeenLocation.position, searchRadius, -1);
+        Vector3 searchPos = RandomNavSphere(transform.position, searchRadius, -1);
         agent.SetDestination(searchPos);
         Debug.Log("Destination: " + searchPos);
     }
