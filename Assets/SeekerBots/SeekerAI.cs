@@ -20,7 +20,8 @@ public class SeekerAI : MonoBehaviour
     public float countDown = 60f;
     private Transform LastSeenLocation;
     [SerializeField] Transform startZone;
-    
+    [SerializeField] AudioSource alertNoise;
+
     private Transform target;
     public NavMeshAgent agent;
     private float timer;
@@ -32,6 +33,7 @@ public class SeekerAI : MonoBehaviour
     {
         
         agent = GetComponent<NavMeshAgent>();
+        agent.speed = chaseSpeed;
         timer = wanderTimer;
         player = GameObject.FindGameObjectWithTag("Player");
 
@@ -54,13 +56,17 @@ public class SeekerAI : MonoBehaviour
             
             if (playerVisible)
             {
+                if (alertNoise != null)
+                {
+                    alertNoise.Play();
+                }
                 Chasing();
                 GetComponent<Renderer>().material.color = new Color(255, 0, 0);
                 LastSeenLocation = player.transform;
                 inPursuit = true;
                 timer = 0;
             }
-            else if (inPursuit)
+            else if (inPursuit && !playerVisible)
             {
                 Searching();
                 GetComponent<Renderer>().material.color = new Color(0, 0, 255);
@@ -69,7 +75,7 @@ public class SeekerAI : MonoBehaviour
                     inPursuit = false;
                 }
             }
-            else if (timer >= wanderTimer)
+            else if (timer >= wanderTimer && !inPursuit && !playerVisible)
             {
                 GetComponent<Renderer>().material.color = new Color(0, 255, 0);
                 Wandering();
@@ -141,6 +147,7 @@ public class SeekerAI : MonoBehaviour
     }
     void Searching()
     {
+        agent.speed = chaseSpeed;
         Debug.Log("Searching: " + agent);
         Vector3 searchPos = RandomNavSphere(LastSeenLocation.position, searchRadius, -1);
         agent.SetDestination(searchPos);
