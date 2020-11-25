@@ -22,8 +22,8 @@ public class SeekerAI : MonoBehaviour
     private Transform target;
     public NavMeshAgent agent;
     private float timer;
-    float FOV = 180f;
-    float visibilityDistance = 100f;
+    float FOV = 120f;
+    float visibilityDistance = 50f;
  
     // Use this for initialization
     void Start()
@@ -43,11 +43,11 @@ public class SeekerAI : MonoBehaviour
         {
             Chasing();
             GetComponent<Renderer>().material.color = new Color(255, 0, 0);
-            LastSeenLocation.position = player.transform.position;
+            LastSeenLocation = player.transform;
             inPursuit = true;
             timer = 0;
         }
-        else if(!playerVisible && inPursuit)
+        else if(inPursuit)
         {
             Searching();
             GetComponent<Renderer>().material.color = new Color(0, 0, 255);
@@ -128,9 +128,9 @@ public class SeekerAI : MonoBehaviour
     void Searching()
     {
         Debug.Log("Searching: " + agent);
-        Vector3 newPos = RandomNavSphere(LastSeenLocation.position, searchRadius, -1);
-        agent.SetDestination(newPos);
-        Debug.Log("Destination: " + newPos);
+        Vector3 searchPos = RandomNavSphere(LastSeenLocation.position, searchRadius, -1);
+        agent.SetDestination(searchPos);
+        Debug.Log("Destination: " + searchPos);
     }
 
 }
