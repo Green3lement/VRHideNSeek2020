@@ -10,14 +10,18 @@ public class SeekerAI : MonoBehaviour
     bool playerVisible;
     bool inPursuit;
     bool gameStart;
+    bool botOn = true;
     private GameObject player;
+    public float startPosTime = 30f;
     public float wanderRadius;
     public float searchRadius;
     public float wanderTimer;
+    public float searchSpotTime;
     public float patrolSpeed = 2f;
     public float chaseSpeed = 5f;
-    public float searchTimer = 50f;
+    public float searchTime = 60f;
     public float countDown = 60f;
+    public float stunTime = 30f;
     private Transform LastSeenLocation;
     [SerializeField] Transform startZone;
     [SerializeField] AudioSource alertNoise;
@@ -25,8 +29,10 @@ public class SeekerAI : MonoBehaviour
     private Transform target;
     public NavMeshAgent agent;
     private float timer;
+    private float searchTimer;
+    private float stunTimer;
     float FOV = 120f;
-    float visibilityDistance = 50f;
+    float visibilityDistance = 100f;
  
     // Use this for initialization
     void Start()
@@ -34,7 +40,6 @@ public class SeekerAI : MonoBehaviour
         
         agent = GetComponent<NavMeshAgent>();
         agent.speed = chaseSpeed;
-        timer = wanderTimer;
         player = GameObject.FindGameObjectWithTag("Player");
 
     }
@@ -42,47 +47,63 @@ public class SeekerAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        stunTimer += Time.deltaTime;
+        searchTimer += Time.deltaTime;
         timer += Time.deltaTime;
-        if(timer >= countDown  && !gameStart)
-        {
-            gameStart = true;
-            agent.SetDestination(startZone.position);
-            timer = 0;
-        }
+        if (botOn) { 
+            if(timer >= countDown  && !gameStart)
+            {
+                gameStart = true;
+                agent.SetDestination(startZone.position);
+                timer = 0;
+            }
 
-        if (gameStart)
-        {
-            playerVisible = CanSeePlayer();
-            
-            if (playerVisible)
+            if (gameStart)
             {
-                if (alertNoise != null)
+                playerVisible = CanSeePlayer();
+
+                if (playerVisible)
                 {
-                    alertNoise.Play();
+                    if (alertNoise != null)
+                    {
+                        alertNoise.Play();
+                    }
+                    Chasing();
+
+                    LastSeenLocation = player.transform;
+                    inPursuit = true;
+                    timer = 0;
+                    searchTimer = 0;
                 }
-                Chasing();
-                GetComponent<Renderer>().material.color = new Color(255, 0, 0);
-                LastSeenLocation = player.transform;
-                inPursuit = true;
-                timer = 0;
-            }
-            else if (inPursuit && !playerVisible)
-            {
-                if(timer>=wanderTimer)
-                    Searching();
-                GetComponent<Renderer>().material.color = new Color(0, 0, 255);
-                if (timer >= searchTimer)
+                else if (inPursuit && !playerVisible)
                 {
-                    inPursuit = false;
+                    if (timer >= searchSpotTime)
+                    {
+                        Searching();
+                        timer = 0;
+                    }
+
+
+
+                    if (searchTimer >= searchTime)
+                    {
+                        inPursuit = false;
+                    }
                 }
-            }
-            else if (timer >= wanderTimer && !inPursuit && !playerVisible)
-            {
-                GetComponent<Renderer>().material.color = new Color(0, 255, 0);
-                Wandering();
-                timer = 0;
-            }
+                else if (timer >= wanderTimer && !inPursuit && !playerVisible && (timer >= startPosTime || transform.position == startZone.position))
+                {
+                    startPosTime = -1;
+                    Wandering();
+                    timer = 0;
+                }
+            }   
         }
+        else if (stunTimer >= stunTime)
+        {
+            agent.isStopped = false;
+            botOn = true;
+        }
+        
     }
 
     /// 
@@ -133,6 +154,7 @@ public class SeekerAI : MonoBehaviour
     }
     void Chasing()
     {
+        GetComponent<Renderer>().material.color = new Color(255, 0, 0);
         agent.speed = chaseSpeed;
         Debug.Log("Chasing: " + agent);
         agent.SetDestination(player.transform.position);
@@ -140,6 +162,7 @@ public class SeekerAI : MonoBehaviour
     }
     void Wandering()
     {
+        GetComponent<Renderer>().material.color = new Color(0, 255, 0);
         agent.speed = patrolSpeed;
         Debug.Log("Wandering: " + agent);
         Vector3 newPos = RandomNavSphere(transform.position, wanderRadius, -1);
@@ -148,11 +171,26 @@ public class SeekerAI : MonoBehaviour
     }
     void Searching()
     {
+        GetComponent<Renderer>().material.color = new Color(0, 0, 255);
         agent.speed = chaseSpeed;
         Debug.Log("Searching: " + agent);
         Vector3 searchPos = RandomNavSphere(transform.position, searchRadius, -1);
         agent.SetDestination(searchPos);
         Debug.Log("Destination: " + searchPos);
     }
+    void Stun()
+    {
+        GetComponent<Renderer>().material.color = new Color(255, 255, 0);
+        agent.isStopped = true;
+        botOn = false;
+    }
 
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Box"))
+        {
+            stunTimer = 0;
+            Stun();
+        }
+    }
 }
