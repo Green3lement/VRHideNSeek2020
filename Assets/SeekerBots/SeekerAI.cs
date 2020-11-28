@@ -33,11 +33,12 @@ public class SeekerAI : MonoBehaviour
     private float stunTimer;
     float FOV = 120f;
     float visibilityDistance = 100f;
+    private Transform Glasses;
  
     // Use this for initialization
     void Start()
     {
-        
+        Glasses = GetComponentInChildren<Transform>();
         agent = GetComponent<NavMeshAgent>();
         agent.speed = chaseSpeed;
         player = GameObject.FindGameObjectWithTag("Player");
@@ -135,7 +136,7 @@ public class SeekerAI : MonoBehaviour
 
         // Is the angle between the difference vector and the eyes' forward vector within the field of view?
         // Make sure to have the Transform of the eyes or head saved so you don't cast the ray from the feet or wherever your pivot is later.
-        if ((Vector3.Angle(rayDirection, transform.forward)) <= FOV * 0.5f)
+        if ((Vector3.Angle(rayDirection, Glasses.forward)) <= FOV * 0.5f)
         {
             RaycastHit hit;
             Debug.DrawRay(transform.position, rayDirection, Color.red);
@@ -191,6 +192,7 @@ public class SeekerAI : MonoBehaviour
         {
             stunTimer = 0;
             Stun();
+            Destroy(collision.gameObject);
         }
     }
 }
