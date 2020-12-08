@@ -30,7 +30,7 @@ Transform:
   m_LocalPosition: {x: 0, y: -0.6, z: 0.5}
   m_LocalScale: {x: 0.75, y: 0.05, z: 0.1}
   m_Children: []
-  m_Father: {fileID: 7629924323163457244}
+  m_Father: {fileID: 4162897969805373694}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6230247660186284700
@@ -1395,7 +1395,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7629924323163457244}
+  - component: {fileID: 4162897969805373694}
   - component: {fileID: 7629924323163457245}
   - component: {fileID: 7629924323163457246}
   - component: {fileID: 7629924323163457247}
@@ -1410,7 +1410,7 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7629924323163457244
+--- !u!4 &4162897969805373694
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1545,9 +1545,9 @@ MonoBehaviour:
   searchSpotTime: 5
   patrolSpeed: 2
   chaseSpeed: 5
-  searchTime: 60
+  searchTime: 30
   countDown: 60
-  stunTime: 30
+  stunTime: 7
   startZone: {fileID: 0}
   alertNoise: {fileID: 5141711143981191487}
   agent: {fileID: 7629924323163457243}

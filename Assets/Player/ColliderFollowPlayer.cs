@@ -18,7 +18,7 @@ public class ColliderFollowPlayer : MonoBehaviour
     {
         Vector3 temp = camera.transform.position - this.transform.position;
         temp.y = collider.transform.position.y;
-        //collider.height = camera.transform.position.y;
+        collider.height = camera.transform.position.y;
         
     }
 }

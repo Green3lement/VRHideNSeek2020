@@ -19,9 +19,9 @@ public class SeekerAI : MonoBehaviour
     public float searchSpotTime;
     public float patrolSpeed = 2f;
     public float chaseSpeed = 5f;
-    public float searchTime = 60f;
+    public float searchTime = 20f;
     public float countDown = 60f;
-    public float stunTime = 30f;
+    public float stunTime = 7f;
     private Transform LastSeenLocation;
     [SerializeField] Transform startZone;
     [SerializeField] AudioSource alertNoise;
@@ -34,7 +34,7 @@ public class SeekerAI : MonoBehaviour
     float FOV = 120f;
     float visibilityDistance = 100f;
     private Transform Glasses;
- 
+
     // Use this for initialization
     void Start()
     {
@@ -42,7 +42,7 @@ public class SeekerAI : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         agent.speed = chaseSpeed;
         player = GameObject.FindGameObjectWithTag("Player");
-
+        
     }
 
     // Update is called once per frame
@@ -83,8 +83,6 @@ public class SeekerAI : MonoBehaviour
                         Searching();
                         timer = 0;
                     }
-
-
 
                     if (searchTimer >= searchTime)
                     {
@@ -193,6 +191,11 @@ public class SeekerAI : MonoBehaviour
             stunTimer = 0;
             Stun();
             Destroy(collision.gameObject);
+        }
+
+        else if(collision.gameObject.CompareTag("Player"))
+        {
+
         }
     }
 }
