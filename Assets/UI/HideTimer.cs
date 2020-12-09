@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class HideTimer : MonoBehaviour
 {
-    public float timeRemaining = 60;
+    public float timeRemaining = 30;
     public bool timerIsRunning = false;
     public Text timeText;
 
@@ -24,9 +24,10 @@ public class HideTimer : MonoBehaviour
                 timeRemaining -= Time.deltaTime;
                 DisplayTime(timeRemaining);
             }
+            
             else
             {
-                timeText.text = "Seeker Bots Searching!";
+                timeText.text = "Bots Searching!";
                 timeRemaining = 0;
                 timerIsRunning = false;
             }

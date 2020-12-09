@@ -6,6 +6,7 @@ TagManager:
   tags:
   - SeekerBots
   - Box
+  - Timers
   layers:
   - Default
   - TransparentFX

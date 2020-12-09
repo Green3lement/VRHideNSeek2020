@@ -133,6 +133,7 @@ public class CharacterCameraConstraint : MonoBehaviour
 			Vector3 newCamPos = CameraRig.transform.localPosition;
 			newCamPos.y = -_character.height * 0.5f;
 			CameraRig.transform.localPosition = newCamPos;
+			_character.center = newCamPos;
 		}
 	}
 
