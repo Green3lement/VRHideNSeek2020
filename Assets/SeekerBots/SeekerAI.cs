@@ -26,6 +26,7 @@ public class SeekerAI : MonoBehaviour
     public float countDown = 30f;
     public float stunTime = 7f;
     public Transform LastSeenLocation;
+    public Vector3 noiseLocation;
     [SerializeField] Transform startZone;
     [SerializeField] AudioSource alertNoise;
     [SerializeField] AudioSource pursuitNoise;
@@ -38,7 +39,7 @@ public class SeekerAI : MonoBehaviour
     private float stunTimer;
     private float investigateTimer;
     float FOV = 120f;
-    float visibilityDistance = 100f;
+    float visibilityDistance = 90f;
     float gameOverDistance = 3f;
     float hearingDistance = 25f;
     bool playerFound = false;
@@ -203,7 +204,7 @@ public class SeekerAI : MonoBehaviour
     {
         GetComponent<Renderer>().material.color = Color.white;
         agent.speed = chaseSpeed;
-        Vector3 investigatePos = RandomNavSphere(LastSeenLocation.position, searchRadius, -1);
+        Vector3 investigatePos = RandomNavSphere(noiseLocation, searchRadius, -1);
         agent.SetDestination(investigatePos);
     }
     void Wandering()
@@ -263,28 +264,6 @@ public class SeekerAI : MonoBehaviour
 
     }
 
-  /*  private bool PlayerHeard(Transform noiseLocation)
-    {
-        // The ray we'll try to cast later is the difference vector between the player and this enemy.
-        var rayDirection = noiseLocation.transform.position - transform.position;
-
-        // Comparing sqr magnitudes will always be faster than performing a sqrt operation.
-        if (rayDirection.sqrMagnitude > hearingDistance * hearingDistance)
-        {
-            return false;
-        }
-        
-        RaycastHit hit;
-        Debug.DrawRay(transform.position, rayDirection, Color.yellow);
-
-        if (Physics.Raycast(transform.position, rayDirection, out hit, hearingDistance))
-        {
-            return true;
-        }
-        return false;
-
-    }*/
-
     IEnumerator WaitFiveCoroutine()
     {
         //Print the time of when the function is first called.
@@ -297,9 +276,9 @@ public class SeekerAI : MonoBehaviour
         Debug.Log("Finished Coroutine at timestamp : " + Time.time);
     }
 
-    void GoInvestigate(Vector3 noiseLocation)
+    void GoInvestigate(Vector3 noise)
     {
-        LastSeenLocation.position = noiseLocation;
+        noiseLocation = noise;
         investigate = true;
         investigateTimer = 0;
         if (pursuitNoise != null)

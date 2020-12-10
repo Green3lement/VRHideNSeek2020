@@ -1554,6 +1554,7 @@ MonoBehaviour:
   countDown: 30
   stunTime: 7
   LastSeenLocation: {fileID: 0}
+  noiseLocation: {x: 0, y: 0, z: 0}
   startZone: {fileID: 0}
   alertNoise: {fileID: 5141711143981191487}
   pursuitNoise: {fileID: 2023175423186957791}

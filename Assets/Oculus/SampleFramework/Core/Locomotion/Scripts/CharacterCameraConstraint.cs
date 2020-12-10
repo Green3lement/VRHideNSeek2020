@@ -59,6 +59,8 @@ public class CharacterCameraConstraint : MonoBehaviour
 
 	private CapsuleCollider _character;
     private SimpleCapsuleWithStickMovement _simplePlayerController;
+	//private CharacterController _character;
+	//private OVRPlayerController _OVRPlayerController;
 
 	CharacterCameraConstraint()
 	{
@@ -69,6 +71,8 @@ public class CharacterCameraConstraint : MonoBehaviour
 	{
 		_character = GetComponent<CapsuleCollider>();
 		_simplePlayerController = GetComponent<SimpleCapsuleWithStickMovement>();
+		//_character = GetComponent<CharacterController>();
+		//_OVRPlayerController = GetComponent<OVRPlayerController>();
 	}
 
 	private void Start()
@@ -77,12 +81,14 @@ public class CharacterCameraConstraint : MonoBehaviour
 
 	void OnEnable()
 	{
-        _simplePlayerController.CameraUpdated += _cameraUpdateAction;
+		_simplePlayerController.CameraUpdated += _cameraUpdateAction;
+		//_OVRPlayerController.CameraUpdated += _cameraUpdateAction;
 	}
 
 	void OnDisable()
 	{
         _simplePlayerController.CameraUpdated -= _cameraUpdateAction;
+		//_OVRPlayerController.CameraUpdated -= _cameraUpdateAction;
 	}
 
     /// <summary>
@@ -129,11 +135,12 @@ public class CharacterCameraConstraint : MonoBehaviour
 			// But note that the player controller is centered in the middle of the rigid body.
 			// So we move the camera position down by half the player's height to get the eye position to line
 			// up with the top of the capsule.
-			_character.height = newHeight;
+			_character.height = newHeight * 0.5f;
 			Vector3 newCamPos = CameraRig.transform.localPosition;
 			newCamPos.y = -_character.height * 0.5f;
 			CameraRig.transform.localPosition = newCamPos;
-			_character.center = newCamPos;
+			//_character.center = newCamPos;
+			_character.center = new Vector3(0, newCamPos.y , 0);
 		}
 	}
 
